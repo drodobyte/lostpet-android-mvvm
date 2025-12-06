@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pets">Pets</string>
+    <string name="profile">Profile</string>
+    <string name="all">All</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
+    <string name="last_known_location">Last known location</string>
+    <string name="description">Description</string>
+    <string name="error">Some error occurred</string>
+    <string name="name">Name</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="no_pets_to_show">No pets to show</string>
+</resources>
