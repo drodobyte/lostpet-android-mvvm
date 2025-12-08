@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class Store(
@@ -16,17 +15,18 @@ internal class Store(
     private val gson by lazy { Gson() }
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "store")
 
-    fun urls(): Flow<List<String>> = context.dataStore.data.map { pref ->
-        pref[urls]?.let { gson.fromJson(it, Type) } ?: Empty
-    }
+    fun urls() = context.dataStore.data.map { it[urls].strings }
 
-    suspend fun urls(new: List<String>) {
+    suspend fun urls(strings: List<String>) {
         context.dataStore.updateData { pref ->
             pref.toMutablePreferences().also {
-                it[urls] = gson.toJson(new)
+                it[urls] = strings.json
             }
         }
     }
+
+    private val String?.strings get() = this?.let { gson.fromJson(it, Type) } ?: Empty
+    private val List<String>.json get() = gson.toJson(this)
 
     private companion object {
         val Type = object : TypeToken<List<String>>() {}.type!!
