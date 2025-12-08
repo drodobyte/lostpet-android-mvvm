@@ -28,7 +28,6 @@ include(":app")
 include(":core:data")
 include(":core:data-local")
 include(":core:data-remote")
-include(":domain")
 include(":feature:pets")
 
 includeBuild("build-logic")

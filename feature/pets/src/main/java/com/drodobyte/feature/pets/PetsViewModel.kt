@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.repository.PetRepository
-import com.drodobyte.domain.usecase.RecommendedIntakeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PetsViewModel @Inject constructor(
     private val petRepository: PetRepository,
-    private val useCase: RecommendedIntakeUseCase,
 ) : ViewModel() {
     init {
         petRepository.scope = viewModelScope

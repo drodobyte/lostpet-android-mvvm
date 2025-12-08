@@ -9,7 +9,6 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
-    implementation(project(":domain"))
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
