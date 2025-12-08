@@ -1,3 +1,9 @@
 package com.drodobyte.core.data.local
 
-internal object Factory
+import android.content.Context
+
+internal object Factory {
+
+    fun dataSource(context: Context) =
+        ImageLocalDataSource(Store(context))
+}

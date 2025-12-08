@@ -1,38 +1,39 @@
 package com.drodobyte.core.data.repository
 
+import com.drodobyte.core.data.local.ImageLocalDataSource
+import com.drodobyte.core.data.model.Filter
+import com.drodobyte.core.data.model.Filter.All
+import com.drodobyte.core.data.model.Filter.Found
+import com.drodobyte.core.data.model.Filter.Lost
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import com.drodobyte.core.data.remote.PetRemoteDataSource
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.remote
-import com.drodobyte.core.data.model.Filter
-import com.drodobyte.core.data.model.Filter.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.map
 
 internal class DefaultPetRepository(
     val petRemoteDataSource: PetRemoteDataSource,
+    val imageLocalDataSource: ImageLocalDataSource,
     val imageRemoteDataSource: ImageRemoteDataSource,
 ) : PetRepository {
 
     override lateinit var scope: CoroutineScope
 
-    private val mutex = Mutex()
-    private var imageCache: List<String> = emptyList()
-
-    override fun images() = flow {
-        emit(
-            if (mutex.withLock { imageCache.isEmpty() }) {
-                imageRemoteDataSource.petImages(10).also {
-                    mutex.withLock { imageCache = it }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun images() =
+        imageLocalDataSource
+            .get()
+            .map {
+                it.ifEmpty {
+                    imageRemoteDataSource.petImages(10).also { new ->
+                        imageLocalDataSource.set(new)
+                    }
                 }
-            } else {
-                mutex.withLock { imageCache }
             }
-        )
-    }
 
     override fun pets(filter: Filter) =
         when (filter) {

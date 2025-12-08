@@ -41,13 +41,13 @@ internal fun Pets(
             }
         } else {
             items(pets) {
-                Summary(it, onSelected)
+                Pet(it, onSelected)
             }
         }
     }
 
 @Composable
-private fun Summary(pet: Pet, clicked: (Pet) -> Unit) =
+private fun Pet(pet: Pet, clicked: (Pet) -> Unit) =
     Box {
         Box(modifier = roundedCornerClipMod) {
             Image(

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.drodobyte.core.data.model.Pet
 
 @Composable
-internal fun Pet(pet: Pet, edited: (Pet) -> Unit) =
+internal fun Pet(pet: Pet, edited: (Pet) -> Unit, onClickImage: () -> Unit) =
     Surface(
         modifier = Modifier
             .padding(32.dp)
@@ -33,7 +33,8 @@ internal fun Pet(pet: Pet, edited: (Pet) -> Unit) =
                     modifier = Modifier
                         .size(256.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally),
+                    clicked = { onClickImage() }
                 )
                 Space()
                 Edit(R.string.name, name) {

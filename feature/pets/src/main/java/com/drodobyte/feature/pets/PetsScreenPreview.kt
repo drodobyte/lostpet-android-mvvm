@@ -13,7 +13,7 @@ import kotlin.annotation.AnnotationTarget.FUNCTION
 @Composable
 @PreviewAll
 private fun NoUserInput() {
-    PetsScreen(State(), {}, {}, {})
+    PetsScreen(State(), {}, {}, {}, {}, {})
 }
 
 @Composable

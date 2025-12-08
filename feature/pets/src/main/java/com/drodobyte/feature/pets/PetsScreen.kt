@@ -46,7 +46,9 @@ fun PetsScreen(
             state,
             onNewPet = { viewModel.newPet() },
             onFilter = { viewModel.filtered(it) },
-            onSelected = { viewModel.selected(it) },
+            onSelectedPet = { viewModel.selected(it) },
+            onClickImage = { viewModel.imageClicked() },
+            onSelectedImage = { viewModel.selected(it) }
         )
     }
 }
@@ -56,7 +58,9 @@ internal fun PetsScreen(
     state: State,
     onNewPet: () -> Unit,
     onFilter: (Filter) -> Unit,
-    onSelected: (Pet) -> Unit,
+    onSelectedPet: (Pet) -> Unit,
+    onClickImage: () -> Unit,
+    onSelectedImage: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -71,16 +75,15 @@ internal fun PetsScreen(
             contentAlignment = Alignment.BottomEnd
         ) {
             ListDetail(
-                {
-                    Pets(
-                        pets = state.pets,
-                        onSelected = { onSelected(it) },
-                    )
+                list = {
+                    Pets(state.pets) { onSelectedPet(it) }
                 },
                 detail = {
-                    state.selected?.let { Pet(state.selected, edited = {}) } ?: Empty()
+                    state.selectedPet?.let {
+                        Pet(state.selectedPet, {}, onClickImage)
+                    } ?: Empty()
                 },
-                detailId = state.selected?.id,
+                detailId = state.selectedPet?.id,
                 back = {}
             )
             EditButtons(
@@ -88,6 +91,10 @@ internal fun PetsScreen(
                 filtered = { onFilter(it) },
                 new = { onNewPet() }
             )
+
+            if (state.images.isNotEmpty()) {
+                PetImagesChooser(state.images, selected = { onSelectedImage(it) })
+            }
         }
 
         val scope = rememberCoroutineScope()

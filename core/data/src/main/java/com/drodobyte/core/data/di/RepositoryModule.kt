@@ -1,5 +1,6 @@
 package com.drodobyte.core.data.di
 
+import com.drodobyte.core.data.local.ImageLocalDataSource
 import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import com.drodobyte.core.data.remote.PetRemoteDataSource
 import com.drodobyte.core.data.repository.DefaultPetRepository
@@ -17,8 +18,9 @@ internal class RepositoryModule {
     @Singleton
     @Provides
     fun petRepository(
+        localImage: ImageLocalDataSource,
         remoteImage: ImageRemoteDataSource,
         remotePet: PetRemoteDataSource,
     ): PetRepository =
-        DefaultPetRepository(remotePet, remoteImage)
+        DefaultPetRepository(remotePet, localImage, remoteImage)
 }
