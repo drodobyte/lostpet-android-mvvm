@@ -82,7 +82,6 @@ internal fun PetsScreen(
                 back = { onSelectedPet(null) }
             )
             EditButtons(
-                Filter.All,
                 filtered = { onFilter(it) },
                 new = { onNewPet() }
             )
