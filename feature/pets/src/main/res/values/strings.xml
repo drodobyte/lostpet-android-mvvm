@@ -9,6 +9,7 @@
     <string name="description">Description</string>
     <string name="error">Some error occurred</string>
     <string name="name">Name</string>
+    <string name="choose_image">Choose image</string>
     <string name="anonymous">Anonymous</string>
     <string name="no_pets_to_show">No pets to show</string>
 </resources>

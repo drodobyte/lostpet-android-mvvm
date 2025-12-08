@@ -11,10 +11,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.drodobyte.core.data.model.Pet
 
@@ -27,6 +29,7 @@ internal fun Pet(pet: Pet, edited: (Pet) -> Unit, onClickImage: () -> Unit) =
     ) {
         with(pet) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource( R.string.choose_image))
                 Image(
                     url = image,
                     resolution = Size(240, 240),
