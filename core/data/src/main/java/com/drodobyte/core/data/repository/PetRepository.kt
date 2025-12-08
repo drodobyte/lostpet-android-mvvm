@@ -9,5 +9,5 @@ interface PetRepository {
     var scope: CoroutineScope
     fun images(): Flow<List<String>>
     fun pets(filter: Filter): Flow<List<Pet>>
-    suspend fun save(pet: Pet)
+    suspend fun save(pet: Pet): Pet
 }

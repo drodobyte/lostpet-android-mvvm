@@ -13,6 +13,7 @@ data class Pet(
 
     companion object {
         val None = Pet()
+        val New = None
     }
 }
 

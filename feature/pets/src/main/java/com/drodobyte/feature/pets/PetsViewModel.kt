@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -58,11 +59,10 @@ class PetsViewModel @Inject constructor(
     fun selected(image: String) =
         viewModelScope.launch {
             selectedPet.updateAndGet { it?.copy(image = image) }?.let { pet ->
-                pets.updateAndGet { it.replaceById(pet.id!!, pet) }
+                pets.updateAndGet { it.replaceById(pet.id, pet) }
             }
             images.update { emptyList() }
         }
-
 
     fun filtered(new: Filter) =
         viewModelScope.launch {
@@ -73,30 +73,12 @@ class PetsViewModel @Inject constructor(
                 }
         }
 
-    fun newPet() {
-
+    fun newPet() =
         viewModelScope.launch {
-            runCatching {
-                (1..10).onEach {
-                    petRepository
-                        .save(
-                            Pet(
-                                id = it.toLong(),
-                                name = "ruffo $it",
-                                description = "My dog $it",
-                                image = "https://images.dog.ceo/breeds/maltese/n02085936_9037.jpg",
-                                location = if (Random.nextBoolean()) "Some location" else ""
-                            )
-                        )
-                }
-            }.fold({}, { errors.update { errors.value?.inc() ?: 0 } })
-
-            fetchPets(Filter.All)
-                .collect { fetch ->
-                    pets.update { fetch }
-                }
+            val new = petRepository.save(Pet.New)
+            pets.getAndUpdate { it.toMutableList().apply { add(new) } }
+            selectedPet.update { new }
         }
-    }
 
     fun imageClicked() =
         viewModelScope.launch {
@@ -126,6 +108,28 @@ class PetsViewModel @Inject constructor(
                 errors.update { errors.value?.inc() ?: 0 }
             }
 
-    private fun List<Pet>.replaceById(id: Long, pet: Pet) =
+    private fun List<Pet>.replaceById(id: Long?, pet: Pet) =
         toMutableList().apply { set(indexOfFirst { id == it.id }, pet) }
+
+    private suspend fun saveMocks() {
+        runCatching {
+            (1..10).onEach {
+                petRepository
+                    .save(
+                        Pet(
+                            id = it.toLong(),
+                            name = "ruffo $it",
+                            description = "My dog $it",
+                            image = "https://images.dog.ceo/breeds/maltese/n02085936_9037.jpg",
+                            location = if (Random.nextBoolean()) "Some location" else ""
+                        )
+                    )
+            }
+        }.fold({}, { errors.update { errors.value?.inc() ?: 0 } })
+
+        fetchPets(Filter.All)
+            .collect { fetch ->
+                pets.update { fetch }
+            }
+    }
 }

@@ -15,7 +15,7 @@ internal interface Adapter {
     interface Remote {
         companion object {
             val List<Response.Pet>.model get() = map { it.model }
-            private val Response.Pet.model get() = Pet(id, name, description, image, location)
+            val Response.Pet.model get() = Pet(id, name, description, image, location)
             //            val Response.toModel get() = foods.toModel
             val Pet.remote get() = Response.Pet(id, name, description, image, location)
 //            private val List<RemFood>.toModel get() = map { it.toModel }
