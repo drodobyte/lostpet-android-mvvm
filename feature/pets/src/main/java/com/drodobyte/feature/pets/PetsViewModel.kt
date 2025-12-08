@@ -6,11 +6,11 @@ import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.repository.PetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,17 +21,19 @@ class PetsViewModel @Inject constructor(
     private val petRepository: PetRepository,
 ) : ViewModel() {
 
-    private val errors = MutableStateFlow<Int?>(null)
+    private val error = MutableStateFlow(false)
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
     private val selectedPet = MutableStateFlow<Pet?>(null)
 
     val uiState = combine(
-        errors,
+        error,
         pets,
         selectedPet,
-        fetchImages(),
-    ) { errors, pets, selectedPet, images ->
-        State(errors, pets, selectedPet, images)
+        petRepository.images().catch { error.update { true } },
+    ) { error, pets, selectedPet, images ->
+        State(error, pets, selectedPet, images)
+    }.onEach {
+        if (it.error) error.update { false } // one-shot state clear
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -48,35 +50,31 @@ class PetsViewModel @Inject constructor(
 
     fun edited(pet: Pet) =
         viewModelScope.launch {
-            val saved = petRepository.persist(pet)
-            selectedPet.update { saved }
-            pets.update { it.addOrReplace(saved) }
+            runCatching {
+                val saved = petRepository.persist(pet)
+                selectedPet.update { saved }
+                pets.update { it.addOrReplace(saved) }
+            }.onFailure {
+                error.update { true }
+            }
         }
 
     fun filtered(new: Filter) =
         viewModelScope.launch {
-            fetchPets(new)
+            petRepository
+                .pets(new)
+                .catch { error.update { true } }
                 .collect { fetch ->
                     pets.update { fetch }
                 }
         }
 
     data class State(
-        val errors: Int? = null,
+        val error: Boolean = false,
         val pets: List<Pet> = emptyList(),
         val selectedPet: Pet? = null,
         val images: List<String> = emptyList(),
     )
-
-    private fun fetchImages() = petRepository.images().fetch()
-
-    private fun fetchPets(filter: Filter) = petRepository.pets(filter).fetch()
-
-    private fun <T> Flow<List<T>>.fetch() =
-        catch {
-            emit(emptyList())
-            errors.update { errors.value?.inc() ?: 0 }
-        }
 
     private fun List<Pet>.addOrReplace(pet: Pet) =
         toMutableList().apply {

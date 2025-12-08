@@ -100,8 +100,8 @@ internal fun PetsScreen(
 
         val scope = rememberCoroutineScope()
         val txt = stringResource(R.string.error)
-        state.errors?.let {
-            LaunchedEffect(state.errors) {
+        if (state.error) {
+            LaunchedEffect(Unit) {
                 scope.launch {
                     snackbarHostState.showSnackbar(txt)
                 }
