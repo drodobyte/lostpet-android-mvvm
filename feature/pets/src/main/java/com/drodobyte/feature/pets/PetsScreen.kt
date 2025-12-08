@@ -47,7 +47,7 @@ internal fun PetsScreen(
     state: State,
     onNewPet: () -> Unit,
     onFilter: (Filter) -> Unit,
-    onSelectedPet: (Pet) -> Unit,
+    onSelectedPet: (Pet?) -> Unit,
     onEdited: (Pet) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -79,7 +79,7 @@ internal fun PetsScreen(
                     } ?: Empty()
                 },
                 detailId = state.selectedPet?.id,
-                back = {}
+                back = { onSelectedPet(null) }
             )
             EditButtons(
                 Filter.All,
