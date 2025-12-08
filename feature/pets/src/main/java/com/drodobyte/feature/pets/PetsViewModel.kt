@@ -61,8 +61,8 @@ class PetsViewModel @Inject constructor(
         viewModelScope.launch {
             filter.update { new }
             fetchPets(new)
-                .collect {
-                    pets.update { it }
+                .collect { fetch ->
+                    pets.update { fetch }
                 }
         }
 
