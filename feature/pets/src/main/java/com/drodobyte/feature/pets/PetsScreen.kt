@@ -23,6 +23,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.feature.pets.PetsViewModel.State
+import com.drodobyte.feature.pets.helper.EditButtons
+import com.drodobyte.feature.pets.helper.ListDetail
+import com.drodobyte.feature.pets.helper.Logo
+import com.drodobyte.feature.pets.helper.PetImagesChooser
+import com.drodobyte.feature.pets.helper.Pets
 import kotlinx.coroutines.launch
 
 @Composable
@@ -71,12 +76,12 @@ internal fun PetsScreen(
                 },
                 detail = {
                     state.selectedPet?.let {
-                        Pet(
+                        com.drodobyte.feature.pets.helper.Pet(
                             pet = state.selectedPet,
                             edited = onEdited,
                             onClickImage = { showImages = true }
                         )
-                    } ?: Empty()
+                    } ?: Logo()
                 },
                 detailId = state.selectedPet?.id,
                 back = { onSelectedPet(null) }

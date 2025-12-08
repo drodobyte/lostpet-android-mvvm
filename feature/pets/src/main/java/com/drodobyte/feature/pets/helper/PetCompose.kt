@@ -1,6 +1,6 @@
 @file:Suppress("FunctionNaming", "MagicNumber")
 
-package com.drodobyte.feature.pets
+package com.drodobyte.feature.pets.helper
 
 import android.util.Size
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.drodobyte.core.data.model.Pet
+import com.drodobyte.feature.pets.R
 
 @Composable
 internal fun Pet(pet: Pet, edited: (Pet) -> Unit, onClickImage: () -> Unit) =

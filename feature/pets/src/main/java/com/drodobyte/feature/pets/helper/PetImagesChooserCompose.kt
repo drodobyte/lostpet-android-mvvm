@@ -1,6 +1,6 @@
 @file:Suppress("FunctionNaming", "MagicNumber")
 
-package com.drodobyte.feature.pets
+package com.drodobyte.feature.pets.helper
 
 import android.util.Size
 import androidx.compose.foundation.layout.Arrangement

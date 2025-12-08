@@ -1,6 +1,6 @@
 @file:Suppress("FunctionNaming")
 
-package com.drodobyte.feature.pets
+package com.drodobyte.feature.pets.helper
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +23,7 @@ import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Filter.All
 import com.drodobyte.core.data.model.Filter.Found
 import com.drodobyte.core.data.model.Filter.Lost
+import com.drodobyte.feature.pets.R
 
 @Composable
 internal fun EditButtons(
