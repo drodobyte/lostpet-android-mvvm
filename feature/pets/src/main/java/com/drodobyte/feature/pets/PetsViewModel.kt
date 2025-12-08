@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class PetsViewModel @Inject constructor(
@@ -96,26 +95,4 @@ class PetsViewModel @Inject constructor(
         toMutableList().apply {
             indexOfFirst { pet.id == it.id }.takeIf { it >= 0 }?.let { set(it, pet) } ?: add(pet)
         }
-
-    private suspend fun saveMocks() {
-        runCatching {
-            (1..10).onEach {
-                petRepository
-                    .save(
-                        Pet(
-                            id = it.toLong(),
-                            name = "ruffo $it",
-                            description = "My dog $it",
-                            image = "https://images.dog.ceo/breeds/maltese/n02085936_9037.jpg",
-                            location = if (Random.nextBoolean()) "Some location" else ""
-                        )
-                    )
-            }
-        }.fold({}, { errors.update { errors.value?.inc() ?: 0 } })
-
-        fetchPets(Filter.All)
-            .collect { fetch ->
-                pets.update { fetch }
-            }
-    }
 }
