@@ -1,6 +1,5 @@
 package com.drodobyte.core.data.model
 
-//@Serializable
 data class Pet(
     val id: Long? = null,
     val name: String = "",

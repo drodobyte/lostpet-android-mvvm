@@ -43,6 +43,9 @@ class PetsViewModel @Inject constructor(
             selectedPet.update { pet }
         }
 
+    fun newPet() =
+        edited(Pet.New)
+
     fun edited(pet: Pet) =
         viewModelScope.launch {
             val saved = petRepository.persist(pet)
@@ -57,8 +60,6 @@ class PetsViewModel @Inject constructor(
                     pets.update { fetch }
                 }
         }
-
-    fun newPet() = edited(Pet.New)
 
     data class State(
         val errors: Int? = null,
