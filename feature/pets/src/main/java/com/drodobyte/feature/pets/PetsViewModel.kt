@@ -6,10 +6,12 @@ import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.repository.PetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,10 +27,11 @@ class PetsViewModel @Inject constructor(
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
     private val selectedPet = MutableStateFlow<Pet?>(null)
 
+    @OptIn(FlowPreview::class)
     val uiState = combine(
         error,
         pets,
-        selectedPet,
+        selectedPet.debounce(500),
         petRepository.images().catch { error.update { true } },
     ) { error, pets, selectedPet, images ->
         State(error, pets, selectedPet, images)
