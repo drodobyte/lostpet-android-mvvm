@@ -10,9 +10,9 @@ import retrofit2.http.Path
 internal interface PetApi {
 
     suspend fun pets(): Response
-    suspend fun pet(id: String): Pet
+    suspend fun pet(id: Long): Pet
     suspend fun save(pet: Pet): Pet
-    suspend fun update(pet: Pet, id: String): Pet
+    suspend fun update(pet: Pet, id: Long): Pet
 }
 
 data class Response(
@@ -36,11 +36,11 @@ internal interface RealPetApi : PetApi {
     override suspend fun pets(): Response
 
     @GET("pets/{id}")
-    override suspend fun pet(@Path("id") id: String): Pet
+    override suspend fun pet(@Path("id") id: Long): Pet
 
     @POST("pets")
     override suspend fun save(@Body pet: Pet): Pet
 
     @PUT("pets/{id}")
-    override suspend fun update(@Body pet: Pet, @Path("id") id: String): Pet
+    override suspend fun update(@Body pet: Pet, @Path("id") id: Long): Pet
 }

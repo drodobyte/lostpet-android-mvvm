@@ -43,7 +43,9 @@ internal class DefaultPetRepository(
         }
 
     override suspend fun save(pet: Pet) =
-        petRemoteDataSource.save(pet.remote).model
+        petRemoteDataSource.all().find { it.id == pet.id }?.let {
+            petRemoteDataSource.update(pet.remote, it.id!!).model
+        } ?: petRemoteDataSource.save(pet.remote).model
 
     private fun find(cond: (Pet) -> Boolean) =
         flow { emit(petRemoteDataSource.all().model.filter { cond(it) }) }

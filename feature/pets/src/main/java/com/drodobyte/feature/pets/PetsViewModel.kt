@@ -14,10 +14,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -35,14 +33,13 @@ class PetsViewModel @Inject constructor(
     private val filter = MutableStateFlow(Filter.All)
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
     private val selectedPet = MutableStateFlow<Pet?>(null)
-    private val images = MutableStateFlow<List<String>>(emptyList())
 
     val uiState = combine(
         errors,
         filter,
         pets,
         selectedPet,
-        images,
+        fetchImages(),
     ) { errors, filter, pets, selectedPet, images ->
         State(errors, filter, pets, selectedPet, images)
     }.stateIn(
@@ -56,12 +53,11 @@ class PetsViewModel @Inject constructor(
             selectedPet.update { pet }
         }
 
-    fun selected(image: String) =
+    fun edited(pet: Pet) =
         viewModelScope.launch {
-            selectedPet.updateAndGet { it?.copy(image = image) }?.let { pet ->
-                pets.updateAndGet { it.replaceById(pet.id, pet) }
-            }
-            images.update { emptyList() }
+            val saved = petRepository.save(pet)
+            selectedPet.update { saved }
+            pets.update { it.addOrReplace(saved) }
         }
 
     fun filtered(new: Filter) =
@@ -73,22 +69,7 @@ class PetsViewModel @Inject constructor(
                 }
         }
 
-    fun newPet() =
-        viewModelScope.launch {
-            val new = petRepository.save(Pet.New)
-            pets.getAndUpdate { it.toMutableList().apply { add(new) } }
-            selectedPet.update { new }
-        }
-
-    fun imageClicked() =
-        viewModelScope.launch {
-            petRepository
-                .images()
-                .fetch()
-                .collect { fetch ->
-                    images.update { fetch }
-                }
-        }
+    fun newPet() = edited(Pet.New)
 
     data class State(
         val errors: Int? = null,
@@ -99,6 +80,8 @@ class PetsViewModel @Inject constructor(
         val selectedImage: String? = null,
     )
 
+    private fun fetchImages() = petRepository.images().fetch()
+
     private fun fetchPets(filter: Filter) = petRepository.pets(filter).fetch()
 
     private fun <T> Flow<List<T>>.fetch() =
@@ -108,8 +91,11 @@ class PetsViewModel @Inject constructor(
                 errors.update { errors.value?.inc() ?: 0 }
             }
 
-    private fun List<Pet>.replaceById(id: Long?, pet: Pet) =
-        toMutableList().apply { set(indexOfFirst { id == it.id }, pet) }
+
+    private fun List<Pet>.addOrReplace(pet: Pet) =
+        toMutableList().apply {
+            indexOfFirst { pet.id == it.id }.takeIf { it >= 0 }?.let { set(it, pet) } ?: add(pet)
+        }
 
     private suspend fun saveMocks() {
         runCatching {
