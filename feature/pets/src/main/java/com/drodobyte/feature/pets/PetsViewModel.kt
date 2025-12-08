@@ -6,13 +6,11 @@ import com.drodobyte.core.data.model.Filter
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.repository.PetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,9 +20,6 @@ import javax.inject.Inject
 class PetsViewModel @Inject constructor(
     private val petRepository: PetRepository,
 ) : ViewModel() {
-    init {
-        petRepository.scope = viewModelScope
-    }
 
     private val errors = MutableStateFlow<Int?>(null)
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
@@ -50,7 +45,7 @@ class PetsViewModel @Inject constructor(
 
     fun edited(pet: Pet) =
         viewModelScope.launch {
-            val saved = petRepository.save(pet)
+            val saved = petRepository.persist(pet)
             selectedPet.update { saved }
             pets.update { it.addOrReplace(saved) }
         }
@@ -77,11 +72,10 @@ class PetsViewModel @Inject constructor(
     private fun fetchPets(filter: Filter) = petRepository.pets(filter).fetch()
 
     private fun <T> Flow<List<T>>.fetch() =
-        flowOn(Dispatchers.IO)
-            .catch {
-                emit(emptyList())
-                errors.update { errors.value?.inc() ?: 0 }
-            }
+        catch {
+            emit(emptyList())
+            errors.update { errors.value?.inc() ?: 0 }
+        }
 
     private fun List<Pet>.addOrReplace(pet: Pet) =
         toMutableList().apply {

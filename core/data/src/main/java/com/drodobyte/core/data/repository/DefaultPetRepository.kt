@@ -8,25 +8,29 @@ import com.drodobyte.core.data.model.Filter.Lost
 import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import com.drodobyte.core.data.remote.PetRemoteDataSource
+import com.drodobyte.core.data.remote.Response
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.remote
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 internal class DefaultPetRepository(
     val petRemoteDataSource: PetRemoteDataSource,
     val imageLocalDataSource: ImageLocalDataSource,
     val imageRemoteDataSource: ImageRemoteDataSource,
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PetRepository {
-
-    override lateinit var scope: CoroutineScope
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun images() =
         imageLocalDataSource
             .get()
+            .flowOn(dispatcher)
             .map {
                 it.ifEmpty {
                     imageRemoteDataSource.petImages(10).also { new ->
@@ -36,17 +40,26 @@ internal class DefaultPetRepository(
             }
 
     override fun pets(filter: Filter) =
-        when (filter) {
-            All -> find { true }
-            Lost -> find { it.lost }
-            Found -> find { it.found }
+        flow {
+            emit(
+                when (filter) {
+                All -> find { true }
+                Lost -> find { it.lost }
+                Found -> find { it.found }
+            }
+            )
+        }.flowOn(dispatcher)
+
+    override suspend fun persist(pet: Pet) =
+        withContext(dispatcher) {
+            upsert(pet.remote).model
         }
 
-    override suspend fun save(pet: Pet) =
+    private suspend fun upsert(pet: Response.Pet) =
         petRemoteDataSource.all().find { it.id == pet.id }?.let {
-            petRemoteDataSource.update(pet.remote, it.id!!).model
-        } ?: petRemoteDataSource.save(pet.remote).model
+            petRemoteDataSource.update(pet, it.id!!)
+        } ?: petRemoteDataSource.insert(pet)
 
-    private fun find(cond: (Pet) -> Boolean) =
-        flow { emit(petRemoteDataSource.all().model.filter { cond(it) }) }
+    private suspend fun find(cond: (Pet) -> Boolean) =
+        petRemoteDataSource.all().model.filter { cond(it) }
 }
