@@ -27,18 +27,16 @@ class PetsViewModel @Inject constructor(
     }
 
     private val errors = MutableStateFlow<Int?>(null)
-    private val filter = MutableStateFlow(Filter.All)
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
     private val selectedPet = MutableStateFlow<Pet?>(null)
 
     val uiState = combine(
         errors,
-        filter,
         pets,
         selectedPet,
         fetchImages(),
-    ) { errors, filter, pets, selectedPet, images ->
-        State(errors, filter, pets, selectedPet, images)
+    ) { errors, pets, selectedPet, images ->
+        State(errors, pets, selectedPet, images)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -59,7 +57,6 @@ class PetsViewModel @Inject constructor(
 
     fun filtered(new: Filter) =
         viewModelScope.launch {
-            filter.update { new }
             fetchPets(new)
                 .collect { fetch ->
                     pets.update { fetch }
@@ -70,11 +67,9 @@ class PetsViewModel @Inject constructor(
 
     data class State(
         val errors: Int? = null,
-        val filter: Filter = Filter.All,
         val pets: List<Pet> = emptyList(),
         val selectedPet: Pet? = null,
         val images: List<String> = emptyList(),
-        val selectedImage: String? = null,
     )
 
     private fun fetchImages() = petRepository.images().fetch()
@@ -87,7 +82,6 @@ class PetsViewModel @Inject constructor(
                 emit(emptyList())
                 errors.update { errors.value?.inc() ?: 0 }
             }
-
 
     private fun List<Pet>.addOrReplace(pet: Pet) =
         toMutableList().apply {
