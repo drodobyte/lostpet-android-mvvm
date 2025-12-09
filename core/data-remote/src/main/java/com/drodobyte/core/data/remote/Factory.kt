@@ -19,7 +19,7 @@ internal object Factory {
         api(RealPetApi::class.java, "https://rem.dbwebb.se/api/")
 
     private fun imageApi() =
-        api(RealImageUrlApi::class.java, "https://dog.ceo/api/")
+        api(RealImageApi::class.java, "https://dog.ceo/api/")
 
     private fun <T> api(service: Class<T>, baseUrl: String): T =
         Retrofit.Builder()

@@ -1,7 +1,7 @@
 package com.drodobyte.core.data.remote
 
 class ImageRemoteDataSource internal constructor(
-    private val api: ImageUrlApi
+    private val api: ImageApi
 ) {
-    suspend fun petImages(count: Int) = api.randomPetImageUrls(count).message
+    suspend fun petImages(count: Int) = api.randomBreeds(count).message
 }
