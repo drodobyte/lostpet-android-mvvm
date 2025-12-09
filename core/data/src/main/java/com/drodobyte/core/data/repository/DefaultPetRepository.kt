@@ -9,6 +9,8 @@ import com.drodobyte.core.data.model.Pet
 import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import com.drodobyte.core.data.remote.PetRemoteDataSource
 import com.drodobyte.core.data.remote.Response
+import com.drodobyte.core.data.repository.Adapter.Local.Companion.local
+import com.drodobyte.core.data.repository.Adapter.Local.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.remote
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,11 +32,12 @@ internal class DefaultPetRepository(
     override fun images() =
         imageLocalDataSource
             .get()
+            .map { it.model }
             .flowOn(dispatcher)
             .map {
                 it.ifEmpty {
                     imageRemoteDataSource.petImages(10).also { new ->
-                        imageLocalDataSource.set(new)
+                        imageLocalDataSource.set(new.local)
                     }
                 }
             }
@@ -43,10 +46,10 @@ internal class DefaultPetRepository(
         flow {
             emit(
                 when (filter) {
-                All -> find { true }
-                Lost -> find { it.lost }
-                Found -> find { it.found }
-            }
+                    All -> find { true }
+                    Lost -> find { it.lost }
+                    Found -> find { it.found }
+                }
             )
         }.flowOn(dispatcher)
 

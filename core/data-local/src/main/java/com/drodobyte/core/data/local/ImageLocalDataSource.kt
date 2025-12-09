@@ -5,5 +5,5 @@ class ImageLocalDataSource internal constructor(
 ) {
     fun get() = store.urls()
 
-    suspend fun set(urls: List<String>) = store.urls(urls)
+    suspend fun set(urls: String) = store.urls(urls)
 }

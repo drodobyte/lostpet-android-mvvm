@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
     implementation(project(":core:data-local"))
     implementation(project(":core:data-remote"))
 }
