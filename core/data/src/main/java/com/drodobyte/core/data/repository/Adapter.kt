@@ -1,7 +1,7 @@
 package com.drodobyte.core.data.repository
 
 import com.drodobyte.core.data.model.Pet
-import com.drodobyte.core.data.remote.Response
+import com.drodobyte.core.data.remote.Api
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -19,9 +19,9 @@ internal interface Adapter {
 
     interface Remote {
         companion object {
-            val List<Response.Pet>.model get() = map { it.model }
-            val Response.Pet.model get() = Pet(id, name, description, image, location)
-            val Pet.remote get() = Response.Pet(id, name, description, image, location)
+            val List<Api.Pet.Response.Pet>.model get() = map { it.model }
+            val Api.Pet.Response.Pet.model get() = Pet(id, name, description, image, location)
+            val Pet.remote get() = Api.Pet.Response.Pet(id, name, description, image, location)
         }
     }
 }

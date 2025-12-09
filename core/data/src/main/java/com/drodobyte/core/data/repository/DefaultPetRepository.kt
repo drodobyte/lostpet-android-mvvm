@@ -6,9 +6,9 @@ import com.drodobyte.core.data.model.Filter.All
 import com.drodobyte.core.data.model.Filter.Found
 import com.drodobyte.core.data.model.Filter.Lost
 import com.drodobyte.core.data.model.Pet
+import com.drodobyte.core.data.remote.Api
 import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import com.drodobyte.core.data.remote.PetRemoteDataSource
-import com.drodobyte.core.data.remote.Response
 import com.drodobyte.core.data.repository.Adapter.Local.Companion.local
 import com.drodobyte.core.data.repository.Adapter.Local.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.model
@@ -58,7 +58,7 @@ internal class DefaultPetRepository(
             upsert(pet.remote).model
         }
 
-    private suspend fun upsert(pet: Response.Pet) =
+    private suspend fun upsert(pet: Api.Pet.Response.Pet) =
         petRemoteDataSource.all().find { it.id == pet.id }?.let {
             petRemoteDataSource.update(pet, it.id!!)
         } ?: petRemoteDataSource.insert(pet)

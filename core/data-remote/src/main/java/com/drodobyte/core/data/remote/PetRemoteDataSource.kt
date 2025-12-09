@@ -1,9 +1,9 @@
 package com.drodobyte.core.data.remote
 
-import com.drodobyte.core.data.remote.Response.Pet
+import com.drodobyte.core.data.remote.Api.Pet.Response.Pet
 
 class PetRemoteDataSource internal constructor(
-    private val api: PetApi
+    private val api: Api.Pet
 ) {
     suspend fun all() = api.pets().data
     suspend fun insert(pet: Pet) = api.save(pet)
