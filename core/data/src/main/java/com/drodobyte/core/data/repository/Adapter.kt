@@ -22,6 +22,7 @@ internal interface Adapter {
             val List<Api.Pet.Response.Pet>.model get() = map { it.model }
             val Api.Pet.Response.Pet.model get() = Pet(id, name, description, image, location)
             val Pet.remote get() = Api.Pet.Response.Pet(id, name, description, image, location)
+            val List<Pet>.remote get() = map{it.remote}
         }
     }
 }

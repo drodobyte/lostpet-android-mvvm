@@ -15,7 +15,6 @@ import com.drodobyte.core.data.repository.Adapter.Remote.Companion.model
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.remote
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -28,7 +27,6 @@ internal class DefaultPetRepository(
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PetRepository {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun images() =
         imageLocalDataSource
             .get()

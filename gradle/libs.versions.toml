@@ -21,6 +21,7 @@ sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "24"
 adaptiveNavigation = "1.2.0"
+mockito = "5.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 coil = { module = 'io.coil-kt.coil3:coil-compose', version.ref = "coil" }
 coil-okhttp = { module = 'io.coil-kt.coil3:coil-network-okhttp', version.ref = "coil" }
+mockito = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
