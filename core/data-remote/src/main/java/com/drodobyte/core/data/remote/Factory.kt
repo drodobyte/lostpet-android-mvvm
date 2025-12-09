@@ -16,10 +16,10 @@ internal object Factory {
         ImageRemoteDataSource(imageApi())
 
     private fun petApi() =
-        api(Api.Pet::class.java, "https://rem.dbwebb.se/api/")
+        api(DefaultPetApi::class.java, "https://rem.dbwebb.se/api/")
 
     private fun imageApi() =
-        api(Api.Image::class.java, "https://dog.ceo/api/")
+        api(DefaultImageApi::class.java, "https://dog.ceo/api/")
 
     private fun <T> api(service: Class<T>, baseUrl: String): T =
         Retrofit.Builder()
