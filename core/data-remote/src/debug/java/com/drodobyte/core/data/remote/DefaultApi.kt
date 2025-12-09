@@ -10,18 +10,11 @@ internal object DefaultImageApi : Image {
 
     override suspend fun randomBreeds(count: Int) =
         Image.Response(
-            listOf(
-                "https://images.dog.ceo/breeds/otterhound/n02091635_699.jpg",
-                "https://images.dog.ceo/breeds/terrier-patterdale/320px-05078045_Patterdale_Terrier.jpg",
-                "https://images.dog.ceo/breeds/terrier-bedlington/n02093647_3464.jpg",
-                "https://images.dog.ceo/breeds/australian-kelpie/Resized_20200214_191118_346649120350209.jpg",
-                "https://images.dog.ceo/breeds/gaddi-indian/Gaddi.jpg",
-                "https://images.dog.ceo/breeds/stbernard/n02109525_11285.jpg",
-                "https://images.dog.ceo/breeds/chow/n02112137_13649.jpg",
-                "https://images.dog.ceo/breeds/danish-swedish-farmdog/ebba_001.jpg",
-                "https://images.dog.ceo/breeds/terrier-wheaten/n02098105_91.jpg",
-                "https://images.dog.ceo/breeds/bulldog-french/n02108915_4901.jpg"
-            )
+            mutableListOf<String>().apply {
+                repeat(count / 10 + if (count % 10 == 0) 0 else 1) {
+                    addAll(urls)
+                }
+            }.subList(0, count)
         )
 }
 
@@ -48,4 +41,19 @@ internal object DefaultPetApi : Api.Pet {
             }
             pet
         }
+}
+
+private val urls = listOf(
+    "otterhound/n02091635_699.jpg",
+    "terrier-patterdale/320px-05078045_Patterdale_Terrier.jpg",
+    "terrier-bedlington/n02093647_3464.jpg",
+    "australian-kelpie/Resized_20200214_191118_346649120350209.jpg",
+    "gaddi-indian/Gaddi.jpg",
+    "stbernard/n02109525_11285.jpg",
+    "chow/n02112137_13649.jpg",
+    "danish-swedish-farmdog/ebba_001.jpg",
+    "terrier-wheaten/n02098105_91.jpg",
+    "bulldog-french/n02108915_4901.jpg"
+).map {
+    "https://images.dog.ceo/breeds/$it"
 }
