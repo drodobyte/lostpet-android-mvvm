@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-    implementation(libs.okhttp.cookie)
+    releaseImplementation(libs.retrofit)
+    releaseImplementation(libs.retrofit.gson)
+    releaseImplementation(libs.okhttp.cookie)
 }
