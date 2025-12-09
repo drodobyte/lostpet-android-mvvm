@@ -2,6 +2,12 @@
 
 package com.drodobyte.feature.pets.helper
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -33,33 +39,44 @@ internal fun EditButtons(
     var expand by remember { mutableStateOf(false) }
 
     Column {
-        if (expand) {
-            FloatingActionButton(
-                onClick = {
-                    expand = false
-                    filtered(All)
-                }) {
-                Text(stringResource(R.string.all))
+        AnimatedContent(
+            expand,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(500)) togetherWith
+                    fadeOut(animationSpec = tween(500))
             }
-            Spacer(Modifier.height(8.dp))
-            FloatingActionButton(
-                onClick = {
-                    expand = false
-                    filtered(Found)
-                }) {
-                Text(stringResource(R.string.found))
+        ) { expanded ->
+            AnimatedVisibility(expanded) {
+                Column {
+                    FloatingActionButton(
+                        onClick = {
+                            expand = false
+                            filtered(All)
+                        }) {
+                        Text(stringResource(R.string.all))
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    FloatingActionButton(
+                        onClick = {
+                            expand = false
+                            filtered(Found)
+                        }) {
+                        Text(stringResource(R.string.found))
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    FloatingActionButton(
+                        onClick = {
+                            expand = false
+                            filtered(Lost)
+                        }) {
+                        Text(stringResource(R.string.lost))
+                    }
+                }
             }
-            Spacer(Modifier.height(8.dp))
-            FloatingActionButton(
-                onClick = {
-                    expand = false
-                    filtered(Lost)
-                }) {
-                Text(stringResource(R.string.lost))
-            }
-        } else {
-            FloatingActionButton({ expand = true }) {
-                Icon(Icons.Filled.Search, "Filter Pets")
+            AnimatedVisibility(!expanded) {
+                FloatingActionButton({ expand = true }) {
+                    Icon(Icons.Filled.Search, "Filter Pets")
+                }
             }
         }
         Spacer(Modifier.height(16.dp))
