@@ -1,12 +1,10 @@
-package com.drodobyte.data.remote
+package com.drodobyte.core.data.remote
 
-import com.drodobyte.core.data.remote.DefaultImageApi
-import com.drodobyte.core.data.remote.ImageRemoteDataSource
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.lang.IllegalArgumentException
 
 class ImageRemoteDataSourceTest {

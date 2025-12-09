@@ -18,7 +18,7 @@ internal object DefaultImageApi : Image {
         )
 }
 
-internal object DefaultPetApi : Api.Pet {
+internal class DefaultPetApi : Api.Pet {
 
     private val mutex = Mutex()
     private val pets = mutableListOf<Pet>()
@@ -36,10 +36,11 @@ internal object DefaultPetApi : Api.Pet {
 
     override suspend fun update(pet: Pet, id: Long) =
         mutex.withLock {
-            pets.replaceAll {
-                if (id == it.id) pet else it
+            pet.copy(id = id).also { updated ->
+                pets.replaceAll {
+                    if (id == it.id) updated else it
+                }
             }
-            pet
         }
 }
 
