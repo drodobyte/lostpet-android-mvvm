@@ -3,6 +3,7 @@
 package com.drodobyte.feature.pets.helper
 
 import android.util.Size
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -30,26 +31,29 @@ internal fun Pet(pet: Pet, edited: (Pet) -> Unit, onClickImage: () -> Unit) =
     ) {
         with(pet) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(stringResource( R.string.choose_image))
-                Image(
-                    url = image,
-                    resolution = Size(240, 240),
-                    modifier = Modifier
-                        .size(256.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .align(Alignment.CenterHorizontally),
-                    clicked = { onClickImage() }
-                )
+                Text(stringResource(R.string.choose_image))
+                Box {
+                    Image(
+                        url = image,
+                        resolution = Size(240, 240),
+                        modifier = Modifier
+                            .size(256.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            then Semantic.EditImage.mod,
+                        clicked = { onClickImage() }
+                    )
+                    FoundBadge(pet.found, Modifier.align(Alignment.TopEnd))
+                }
                 Space()
-                Edit(R.string.name, name) {
+                Edit(Semantic.EditName.mod, R.string.name, name) {
                     edited(pet.copy(name = it))
                 }
                 Space()
-                Edit(R.string.description, description) {
+                Edit(Semantic.EditDescription.mod, R.string.description, description) {
                     edited(pet.copy(description = it))
                 }
                 Space()
-                Edit(R.string.last_known_location, location ?: "") {
+                Edit(Semantic.EditLocation.mod, R.string.last_known_location, location ?: "") {
                     edited(pet.copy(location = it))
                 }
             }
@@ -58,3 +62,4 @@ internal fun Pet(pet: Pet, edited: (Pet) -> Unit, onClickImage: () -> Unit) =
 
 @Composable
 private fun Space() = Spacer(Modifier.padding(bottom = 16.dp))
+

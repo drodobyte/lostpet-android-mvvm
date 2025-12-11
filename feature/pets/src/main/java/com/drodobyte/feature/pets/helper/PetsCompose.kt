@@ -38,7 +38,10 @@ internal fun Pets(
     ) {
         if (pets.isEmpty()) {
             item {
-                Text(text = stringResource(R.string.no_pets_to_show))
+                Text(
+                    modifier = Semantic.NoPetsToShow.mod,
+                    text = stringResource(R.string.no_pets_to_show)
+                )
             }
         } else {
             items(pets) {
@@ -50,7 +53,10 @@ internal fun Pets(
 @Composable
 private fun Pet(pet: Pet, clicked: (Pet) -> Unit) =
     Box {
-        Box(modifier = roundedCornerClipMod) {
+        Box(
+            modifier = roundedCornerClipMod
+                then Semantic.Pet.mod
+        ) {
             Image(
                 url = pet.image,
                 resolution = Size(120, 120),
@@ -78,7 +84,7 @@ private fun Pet(pet: Pet, clicked: (Pet) -> Unit) =
     }
 
 @Composable
-private fun FoundBadge(found: Boolean, modifier: Modifier = Modifier) {
+internal fun FoundBadge(found: Boolean, modifier: Modifier = Modifier) {
     if (found) {
         Box(
             modifier = modifier

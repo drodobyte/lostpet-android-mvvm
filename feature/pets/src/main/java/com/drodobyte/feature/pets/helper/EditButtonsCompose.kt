@@ -49,6 +49,7 @@ internal fun EditButtons(
             AnimatedVisibility(expanded) {
                 Column {
                     FloatingActionButton(
+                        modifier = Semantic.All.mod,
                         onClick = {
                             expand = false
                             filtered(All)
@@ -57,6 +58,7 @@ internal fun EditButtons(
                     }
                     Spacer(Modifier.height(8.dp))
                     FloatingActionButton(
+                        modifier = Semantic.Found.mod,
                         onClick = {
                             expand = false
                             filtered(Found)
@@ -65,6 +67,7 @@ internal fun EditButtons(
                     }
                     Spacer(Modifier.height(8.dp))
                     FloatingActionButton(
+                        modifier = Semantic.Lost.mod,
                         onClick = {
                             expand = false
                             filtered(Lost)
@@ -74,13 +77,18 @@ internal fun EditButtons(
                 }
             }
             AnimatedVisibility(!expanded) {
-                FloatingActionButton({ expand = true }) {
-                    Icon(Icons.Filled.Search, "Filter Pets")
+                FloatingActionButton(
+                    modifier = Semantic.Filter.mod,
+                    onClick = { expand = true }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Filter Pets")
                 }
             }
         }
         Spacer(Modifier.height(16.dp))
-        FloatingActionButton(onClick = new) {
+        FloatingActionButton(
+            modifier = Semantic.NewPet.mod,
+            onClick = new
+        ) {
             Icon(Icons.Filled.Add, contentDescription = "Add New Pet")
         }
     }

@@ -24,6 +24,7 @@ internal fun PetImagesChooser(
 ) {
     Dialog(onDismissRequest = { }) {
         LazyVerticalGrid(
+            modifier = Semantic.ImageChooser.mod,
             verticalArrangement = spacedBy24,
             horizontalArrangement = spacedBy24,
             columns = GridCells.FixedSize(128.dp),
