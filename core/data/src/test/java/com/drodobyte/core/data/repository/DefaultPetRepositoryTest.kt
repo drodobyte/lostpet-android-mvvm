@@ -11,7 +11,6 @@ import com.drodobyte.core.data.repository.Adapter.Local.Companion.local
 import com.drodobyte.core.data.repository.Adapter.Remote.Companion.remote
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.Assert.assertEquals
@@ -122,25 +121,23 @@ class DefaultPetRepositoryTest {
         tested: suspend PetRepository.(PetRemoteDataSource, ImageLocalDataSource, ImageRemoteDataSource) -> Unit
     ) = runTest {
         val pet = mock<PetRemoteDataSource> {
-            on { runBlocking { all() } } doReturn pets.remote
-            on { runBlocking { insert(any()) } } doReturn Pet().remote
-            on { runBlocking { update(any(), any()) } } doReturn Pet().remote
+            onBlocking { all() } doReturn pets.remote
+            onBlocking { insert(any()) } doReturn Pet().remote
+            onBlocking { update(any(), any()) } doReturn Pet().remote
         }
         val imageLocal = mock<ImageLocalDataSource> {
             on { get() } doReturn flow { emit(localImages.local) }
-            on { runBlocking { set(any()) } } doReturn Unit
+            onBlocking { set(any()) } doReturn Unit
         }
         val imageRemote = mock<ImageRemoteDataSource> {
-            on { runBlocking { petImages(any()) } } doReturn remoteImages
+            onBlocking { petImages(any()) } doReturn remoteImages
         }
-        runBlocking {
-            tested(
-                DefaultPetRepository(
-                    pet,
-                    imageLocal,
-                    imageRemote
-                ), pet, imageLocal, imageRemote
-            )
-        }
+        tested(
+            DefaultPetRepository(
+                pet,
+                imageLocal,
+                imageRemote
+            ), pet, imageLocal, imageRemote
+        )
     }
 }
