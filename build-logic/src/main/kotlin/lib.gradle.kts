@@ -13,6 +13,7 @@ android {
         minSdk = libs.versions.sdk.min.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -42,4 +43,5 @@ dependencies {
     testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
 }
