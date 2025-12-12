@@ -10,6 +10,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
@@ -35,9 +36,8 @@ class PetsViewModel @Inject constructor(
         error,
         pets,
         selectedPet,
-        edits(),
         images(),
-    ) { error, pets, selectedPet, _, images ->
+    ) { error, pets, selectedPet, images ->
         State(error, pets, selectedPet, images)
     }.onEach {
         if (it.error) error.update { false } // one-shot state clear
@@ -46,6 +46,9 @@ class PetsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = State()
     ).onStart {
+        viewModelScope.launch {
+            edits().collect()
+        }
         filtered(Filter.All)
     }
 
