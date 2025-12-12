@@ -1,10 +1,12 @@
 package com.drodobyte.core.data.remote
 
+import android.content.Context
+
 internal object Factory {
 
-    fun petDataSource() =
+    fun petDataSource(context: Context) =
         PetRemoteDataSource(DefaultPetApi())
 
-    fun imageDataSource() =
+    fun imageDataSource(context: Context) =
         ImageRemoteDataSource(DefaultImageApi)
 }
