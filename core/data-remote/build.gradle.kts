@@ -9,5 +9,6 @@ android {
 dependencies {
     releaseImplementation(libs.retrofit)
     releaseImplementation(libs.retrofit.gson)
-    releaseImplementation(libs.okhttp.cookie)
+    releaseImplementation(libs.cookie.store)
+    releaseImplementation(libs.cookie.store.http)
 }

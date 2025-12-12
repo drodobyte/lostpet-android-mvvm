@@ -1,9 +1,11 @@
 package com.drodobyte.core.data.remote.di
 
+import android.content.Context
 import com.drodobyte.core.data.remote.Factory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -13,9 +15,11 @@ internal class RemoteDataModule {
 
     @Provides
     @Singleton
-    fun petDataSource() = Factory.petDataSource()
+    fun petDataSource(@ApplicationContext context: Context) =
+        Factory.petDataSource(context)
 
     @Provides
     @Singleton
-    fun imageDataSource() = Factory.imageDataSource()
+    fun imageDataSource(@ApplicationContext context: Context) =
+        Factory.imageDataSource(context)
 }
