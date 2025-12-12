@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(FlowPreview::class)
 class PetsViewModel @Inject constructor(
     private val petRepository: PetRepository,
 ) : ViewModel() {
@@ -27,14 +29,15 @@ class PetsViewModel @Inject constructor(
     private val error = MutableStateFlow(false)
     private val pets = MutableStateFlow<List<Pet>>(emptyList())
     private val selectedPet = MutableStateFlow<Pet?>(null)
+    private val _edited = MutableStateFlow<Pet?>(null)
 
-    @OptIn(FlowPreview::class)
     val uiState = combine(
         error,
         pets,
-        selectedPet.debounce(500),
-        petRepository.images().catch { error.update { true } },
-    ) { error, pets, selectedPet, images ->
+        selectedPet,
+        edits(),
+        images(),
+    ) { error, pets, selectedPet, _, images ->
         State(error, pets, selectedPet, images)
     }.onEach {
         if (it.error) error.update { false } // one-shot state clear
@@ -51,19 +54,11 @@ class PetsViewModel @Inject constructor(
             selectedPet.update { pet }
         }
 
+    fun edited(pet: Pet) =
+        _edited.update { pet }
+
     fun newPet() =
         edited(Pet.New)
-
-    fun edited(pet: Pet) =
-        viewModelScope.launch {
-            runCatching {
-                val saved = petRepository.persist(pet)
-                selectedPet.update { saved }
-                pets.update { it.addOrReplace(saved) }
-            }.onFailure {
-                error.update { true }
-            }
-        }
 
     fun filtered(new: Filter) =
         viewModelScope.launch {
@@ -84,6 +79,25 @@ class PetsViewModel @Inject constructor(
 
     private fun List<Pet>.addOrReplace(pet: Pet) =
         toMutableList().apply {
-            indexOfFirst { pet.id == it.id }.takeIf { it >= 0 }?.let { set(it, pet) } ?: add(pet)
+            indexOfFirst { pet.id == it.id }.takeIf { it >= 0 }?.let { set(it, pet) }
+                ?: add(pet)
         }
+
+    private fun edits() = _edited
+        .filterNotNull()
+        .debounce(500)
+        .onEach { pet ->
+            runCatching {
+                val saved = petRepository.persist(pet)
+                selectedPet.update { saved }
+                pets.update { it.addOrReplace(saved) }
+            }.onFailure {
+                error.update { true }
+            }
+        }
+
+    private fun images() =
+        petRepository
+            .images()
+            .catch { error.update { true } }
 }
