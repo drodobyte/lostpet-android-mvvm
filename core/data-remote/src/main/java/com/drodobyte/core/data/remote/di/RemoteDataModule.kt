@@ -5,21 +5,21 @@ import com.drodobyte.core.data.remote.Factory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 internal class RemoteDataModule {
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun petDataSource(@ApplicationContext context: Context) =
         Factory.petDataSource(context)
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun imageDataSource(@ApplicationContext context: Context) =
         Factory.imageDataSource(context)
 }
