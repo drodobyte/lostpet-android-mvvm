@@ -5,6 +5,7 @@ import com.drodobyte.feature.pets.helper.Semantic.All
 import com.drodobyte.feature.pets.helper.Semantic.Badge
 import com.drodobyte.feature.pets.helper.Semantic.EditImage
 import com.drodobyte.feature.pets.helper.Semantic.EditLocation
+import com.drodobyte.feature.pets.helper.Semantic.EditName
 import com.drodobyte.feature.pets.helper.Semantic.Filter
 import com.drodobyte.feature.pets.helper.Semantic.Found
 import com.drodobyte.feature.pets.helper.Semantic.ImageChooser
@@ -33,18 +34,20 @@ class MainActivityTest : BaseTest() {
     }
 
     @Test
-    fun pets_are_added_when_new_pet_is_clicked() {
+    fun pet_is_added_when_new_pet_is_clicked() {
         NewPet.click()
-        NewPet.click()
-        NewPet.click()
+        EditName.waitVisible()
+        EditName.text("name")
+        pressBack()
+        pressBack()
 
-        nodes(Pet).assertCountEquals(3)
+        nodes(Pet).assertCountEquals(1)
     }
 
     @Test
     fun badge_not_shown_if_pet_lost() {
         NewPet.click()
-        EditLocation.wait()
+        EditLocation.waitVisible()
         EditLocation.text("")
 
         Badge.isNotDisplayed()
@@ -53,7 +56,7 @@ class MainActivityTest : BaseTest() {
     @Test
     fun badge_shown_if_pet_found() {
         NewPet.click()
-        EditLocation.wait()
+        EditLocation.waitVisible()
         EditLocation.text("place")
 
         Badge.isDisplayed()
@@ -62,7 +65,7 @@ class MainActivityTest : BaseTest() {
     @Test
     fun show_image_chooser_if_image_clicked() {
         NewPet.click()
-        EditImage.wait()
+        EditImage.waitVisible()
         EditImage.click()
 
         ImageChooser.isDisplayed()
