@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Grant wrapper
-        run: chmod +x ./gradlew
-
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Grant wrapper
+        run: chmod +x ./gradlew
 
       - name: set up JDK
         uses: actions/setup-java@v3
