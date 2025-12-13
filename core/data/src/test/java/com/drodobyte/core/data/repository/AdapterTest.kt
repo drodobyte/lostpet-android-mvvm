@@ -3,7 +3,6 @@ package com.drodobyte.core.data.repository
 import com.drodobyte.core.data.repository.Adapter.Local.Companion.local
 import com.drodobyte.core.data.repository.Adapter.Local.Companion.model
 import com.google.gson.JsonSyntaxException
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
