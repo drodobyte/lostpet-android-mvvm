@@ -10,37 +10,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    runs-on: [ ubuntu-latest ]
+  lint_and_tests:
+    runs-on: macos-12
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Grant wrapper
+        run: chmod +x ./gradlew
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 17
-      - name: Unit tests
+
+      - name: Lint tests
         run: ./gradlew lint
-  unit_tests:
-    runs-on: [ ubuntu-latest ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 17
+
       - name: Unit tests
         run: ./gradlew testDebugUnitTest
-  android_tests:
-    runs-on: [ macos-12 ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 17
+
       - name: Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
