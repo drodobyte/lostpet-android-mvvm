@@ -11,7 +11,7 @@ on:
 
 jobs:
   lint_and_tests:
-    runs-on: macos-12
+    runs-on: ubuntu-latest
 
     steps:
       - name: Grant wrapper
