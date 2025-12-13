@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        api-level: [ 36 ]
+        api-level: [ 34 ]
 
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
       # Creates AVD
       - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: ReactiveCircus/android-emulator-runner@v2
+        uses: ReactiveCircus/android-emulator-runner@v2.35.0
         with:
           api-level: ${{ matrix.api-level }}
           force-avd-creation: false
