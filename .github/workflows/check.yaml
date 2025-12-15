@@ -1,4 +1,4 @@
-name: Lint, Unit & Instrumented Tests
+name: lint | kover | ui tests
 
 on:
   push:
@@ -36,8 +36,8 @@ jobs:
       - name: Lint tests
         run: ./gradlew lint
 
-      - name: Unit tests
-        run: ./gradlew testDebugUnitTest
+      - name: Unit test coverage
+        run: ./gradlew koverHtmlReportDebug
 
       # Android Instrumented Tests
       # enables hardware accelerated Android emulator for linux

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -57,4 +58,21 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
+
+    kover(project(":core:data"))
+    kover(project(":core:data-local"))
+    kover(project(":core:data-remote"))
+    kover(project(":feature:pets"))
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                androidGeneratedClasses()
+                annotatedBy("dagger*internal*", "dagger.Module")
+                classes("*_HiltModules*")
+            }
+        }
+    }
 }
