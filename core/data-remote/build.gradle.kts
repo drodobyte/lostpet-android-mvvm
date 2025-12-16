@@ -7,8 +7,8 @@ android {
 }
 
 dependencies {
-    releaseImplementation(libs.retrofit)
-    releaseImplementation(libs.retrofit.gson)
-    releaseImplementation(libs.cookie.store)
-    releaseImplementation(libs.cookie.store.http)
+    realImplementation(libs.retrofit)
+    realImplementation(libs.retrofit.gson)
+    realImplementation(libs.cookie.store)
+    realImplementation(libs.cookie.store.http)
 }

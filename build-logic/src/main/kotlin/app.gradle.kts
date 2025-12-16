@@ -34,6 +34,17 @@ android {
             )
         }
     }
+
+    flavorDimensions += "api"
+    productFlavors {
+        create("mock") {
+            dimension = "api"
+        }
+        create("real") {
+            dimension = "api"
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -60,18 +71,19 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
 
     kover(project(":core:data"))
-    kover(project(":core:data-local"))
-    kover(project(":core:data-remote"))
     kover(project(":feature:pets"))
 }
 
 kover {
     reports {
+        verify {
+            rule {
+                minBound(95)
+            }
+        }
         filters {
-            excludes {
-                androidGeneratedClasses()
-                annotatedBy("dagger*internal*", "dagger.Module")
-                classes("*_HiltModules*")
+            includes {
+                classes("*.PetsViewModel", "*.DefaultPetRepository")
             }
         }
     }

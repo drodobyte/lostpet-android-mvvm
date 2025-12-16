@@ -27,6 +27,17 @@ android {
             )
         }
     }
+
+    flavorDimensions += "api"
+    productFlavors {
+        create("mock") {
+            dimension = "api"
+        }
+        create("real") {
+            dimension = "api"
+        }
+    }
+
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)

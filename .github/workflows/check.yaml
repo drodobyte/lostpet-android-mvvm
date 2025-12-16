@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew lint
 
       - name: Unit test coverage
-        run: ./gradlew koverHtmlReportDebug
+        run: ./gradlew koverVerifyMockDebug
 
       # Android Instrumented Tests
       # enables hardware accelerated Android emulator for linux
@@ -78,4 +78,4 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest
+          script: ./gradlew connectedMockDebugAndroidTest

@@ -11,22 +11,22 @@ import java.net.CookiePolicy.ACCEPT_ALL
 
 internal object Factory {
 
-    fun petDataSource(context: Context) =
+    fun petDataSource(context: Context? = null) =
         PetRemoteDataSource(petApi(context))
 
-    fun imageDataSource(context: Context) =
+    fun imageDataSource(context: Context? = null) =
         ImageRemoteDataSource(imageApi(context))
 
-    private fun petApi(context: Context) =
+    private fun petApi(context: Context?) =
         api(context, DefaultPetApi::class.java, "https://rem.dbwebb.se/api/")
 
-    private fun imageApi(context: Context) =
+    private fun imageApi(context: Context?) =
         api(context, DefaultImageApi::class.java, "https://dog.ceo/api/")
 
-    private fun <T> api(context: Context, service: Class<T>, baseUrl: String): T =
+    private fun <T> api(context: Context?, service: Class<T>, baseUrl: String): T =
         Retrofit.Builder()
             .baseUrl(baseUrl)
-            .client(client(context))
+            .apply { context?.let { client(client(it)) } }
             .addConverterFactory(create())
             .build()
             .create(service)

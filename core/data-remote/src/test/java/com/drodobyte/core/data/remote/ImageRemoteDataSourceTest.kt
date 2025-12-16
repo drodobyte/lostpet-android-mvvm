@@ -33,5 +33,5 @@ class ImageRemoteDataSourceTest {
         assertEquals(15, dataSource().petImages(15).size)
     }
 
-    private fun dataSource() = ImageRemoteDataSource(DefaultImageApi)
+    private fun dataSource() = Factory.imageDataSource()
 }
